@@ -1,0 +1,103 @@
+{
+  "name": "terminal-impact-highlighter",
+  "displayName": "Terminal Impact Highlighter",
+  "description": "Highlights files created or modified by integrated terminal commands, right in the Explorer.",
+  "version": "0.0.1",
+  "publisher": "VOTRE_PUBLISHER",
+  "engines": {
+    "vscode": "^1.106.1"
+  },
+  "categories": [
+    "Other",
+    "SCM"
+  ],
+  "keywords": [
+    "terminal",
+    "highlight",
+    "file",
+    "impact",
+    "generator"
+  ],
+  "icon": "images/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VOTRE_GITHUB/vscode-terminal-impact-highlighter-v1.git"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "terminal-impact-highlighter.helloWorld",
+        "title": "Hello World"
+      },
+      {
+        "command": "terminal-impact-highlighter.clearHighlights",
+        "title": "Terminal Impact: Clear All Highlights"
+      },
+      {
+        "command": "terminal-impact-highlighter.toggleEnabled",
+        "title": "Terminal Impact: Toggle Enabled"
+      }
+    ],
+    "configuration": {
+      "title": "Terminal Impact Highlighter",
+      "properties": {
+        "terminalImpactHighlighter.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable the extension."
+        },
+        "terminalImpactHighlighter.highlightDurationMs": {
+          "type": "number",
+          "default": 5000,
+          "description": "Duration (in milliseconds) to keep the highlight on a file. 0 means infinite."
+        },
+        "terminalImpactHighlighter.include": {
+          "type": "array",
+          "default": [
+            "**/*"
+          ],
+          "description": "Glob patterns for files to include in highlighting."
+        },
+        "terminalImpactHighlighter.exclude": {
+          "type": "array",
+          "default": [],
+          "description": "Glob patterns for files to exclude from highlighting."
+        },
+        "terminalImpactHighlighter.triggerMode": {
+          "type": "string",
+          "enum": [
+            "terminalOnly",
+            "always"
+          ],
+          "default": "terminalOnly",
+          "description": "Choose 'terminalOnly' to highlight only during terminal commands, or 'always' to highlight any file change (useful for AI agents)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "dependencies": {
+    "minimatch": "^9.0.5"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.106.1",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "typescript-eslint": "^8.46.3",
+    "eslint": "^9.39.1",
+    "typescript": "^5.9.3",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2"
+  }
+}
