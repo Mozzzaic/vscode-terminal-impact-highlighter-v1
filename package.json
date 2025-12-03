@@ -2,7 +2,7 @@
   "name": "terminal-impact",
   "displayName": "Terminal Impact",
   "description": "Highlights files created or modified by integrated terminal commands, right in the Explorer.",
-  "version": "0.0.2",
+  "version": "1.0.6",
   "publisher": "davidpinheiro",
   "engines": {
     "vscode": "^1.106.1"
@@ -73,7 +73,7 @@
             "terminalOnly",
             "always"
           ],
-          "default": "terminalOnly",
+          "default": "always",
           "description": "Choose 'terminalOnly' to highlight only during terminal commands, or 'always' to highlight any file change (useful for AI agents)."
         }
       }

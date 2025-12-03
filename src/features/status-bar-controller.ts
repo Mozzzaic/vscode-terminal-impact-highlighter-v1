@@ -27,9 +27,10 @@ export class StatusBarController {
 
   /**
    * Updates the status bar display based on the current configuration state.
+   * @param forceState Optional state to force display (useful when settings can't be saved)
    */
-  public update(): void {
-    const isEnabled = this.configService.isEnabled();
+  public update(forceState?: boolean): void {
+    const isEnabled = forceState !== undefined ? forceState : this.configService.isEnabled();
 
     if (isEnabled) {
       this.statusBarItem.text = '$(circle-filled) TI On';

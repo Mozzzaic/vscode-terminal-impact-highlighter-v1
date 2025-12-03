@@ -37,6 +37,24 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.workspace.onDidChangeConfiguration((event) => {
       if (event.affectsConfiguration('terminalImpactHighlighter')) {
         statusBarController.update();
+        // If extension was disabled, clear all highlights
+        if (!configService.isEnabled()) {
+          highlightStore.clear();
+        }
+      }
+    })
+  );
+
+  // 6b. Auto-clear highlights when user opens/focuses a file
+  context.subscriptions.push(
+    vscode.window.onDidChangeActiveTextEditor((editor) => {
+      if (editor && editor.document) {
+        const openedUri = editor.document.uri;
+        // Remove highlight from the opened file
+        if (highlightStore.has(openedUri)) {
+          highlightStore.delete(openedUri);
+          console.log(`Cleared highlight for opened file: ${openedUri.fsPath}`);
+        }
       }
     })
   );
@@ -91,11 +109,74 @@ export function activate(context: vscode.ExtensionContext) {
   const toggleEnabledCommand = vscode.commands.registerCommand(
     'terminal-impact-highlighter.toggleEnabled',
     async () => {
-      const config = vscode.workspace.getConfiguration('terminalImpactHighlighter');
-      const currentValue = config.get<boolean>('enabled', true);
-      await config.update('enabled', !currentValue, vscode.ConfigurationTarget.Global);
-      const newState = !currentValue ? 'enabled' : 'disabled';
-      vscode.window.showInformationMessage(`Terminal Impact Highlighter ${newState}.`);
+      try {
+        const config = vscode.workspace.getConfiguration('terminalImpactHighlighter');
+        const currentValue = config.get<boolean>('enabled', true);
+        const newValue = !currentValue;
+
+        // Try to update configuration with fallback strategy
+        let updated = false;
+        let configTarget: vscode.ConfigurationTarget | null = null;
+
+        // Try Global settings first
+        try {
+          await config.update('enabled', newValue, vscode.ConfigurationTarget.Global);
+          updated = true;
+          configTarget = vscode.ConfigurationTarget.Global;
+          configService.clearInMemoryEnabled(); // Clear in-memory override when successfully saved
+          console.log('Updated global settings successfully');
+        } catch (globalError) {
+          console.warn('Failed to update global settings, trying workspace...', globalError);
+
+          // Fall back to Workspace settings if Global fails
+          try {
+            await config.update('enabled', newValue, vscode.ConfigurationTarget.Workspace);
+            updated = true;
+            configTarget = vscode.ConfigurationTarget.Workspace;
+            configService.clearInMemoryEnabled(); // Clear in-memory override when successfully saved
+            console.log('Updated workspace settings successfully');
+          } catch (workspaceError) {
+            console.error('Failed to update both global and workspace settings', workspaceError);
+
+            // Show helpful error message
+            const action = await vscode.window.showErrorMessage(
+              'Cannot save settings. Your settings file may have syntax errors.',
+              'Open Settings',
+              'Continue Anyway'
+            );
+
+            if (action === 'Open Settings') {
+              vscode.commands.executeCommand('workbench.action.openSettings');
+              return;
+            }
+            // If "Continue Anyway", use in-memory state for this session
+            configService.setInMemoryEnabled(newValue);
+          }
+        }
+
+        // Update UI regardless of whether settings were saved
+        // This allows the extension to work in-memory for the current session
+        // Pass the newValue to force the display update even if settings couldn't be written
+        statusBarController.update(newValue);
+
+        // Clear highlights if disabling
+        if (!newValue) {
+          highlightStore.clear();
+        }
+
+        const newState = newValue ? 'enabled' : 'disabled';
+        if (updated) {
+          const scope = configTarget === vscode.ConfigurationTarget.Global ? 'globally' : 'for this workspace';
+          vscode.window.showInformationMessage(`Terminal Impact ${newState} ${scope}.`);
+        } else {
+          vscode.window.showWarningMessage(`Terminal Impact ${newState} (for this session only - not saved to settings).`);
+        }
+
+        console.log(`Terminal Impact toggled to: ${newState}`);
+      } catch (error) {
+        vscode.window.showErrorMessage(`Failed to toggle Terminal Impact: ${error}`);
+        console.error('Toggle command error:', error);
+      }
     }
   );
 

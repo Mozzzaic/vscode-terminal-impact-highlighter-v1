@@ -15,13 +15,19 @@ export class HighlightDecorationProvider implements vscode.FileDecorationProvide
 
   /**
    * Method called by VS Code for each file visible in the explorer.
+   * Uses orange/amber theme color for professional IDE-like appearance.
    */
   provideFileDecoration(
     uri: vscode.Uri,
-    token: vscode.CancellationToken
+    _token: vscode.CancellationToken  // Prefixed with _ to indicate intentionally unused
   ): vscode.ProviderResult<vscode.FileDecoration> {
     if (this.store.has(uri)) {
-      return new vscode.FileDecoration('●', 'Impact');
+      // Use orange/amber theme color with diamond badge for visibility
+      return new vscode.FileDecoration(
+        '◆',  // Diamond badge character - distinct from GitHub's UI
+        'Modified by Terminal Impact',  // Tooltip on hover
+        new vscode.ThemeColor('charts.orange')  // Professional orange color that works in light/dark themes
+      );
     }
     return undefined;
   }

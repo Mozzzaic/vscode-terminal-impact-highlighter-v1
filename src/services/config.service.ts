@@ -3,15 +3,36 @@ import * as vscode from 'vscode';
 /**
  * Configuration service for the extension.
  * Encapsulates reading settings from VS Code configuration.
+ * Supports in-memory overrides for when settings can't be saved.
  */
 export class ConfigService {
   private readonly configSection = 'terminalImpactHighlighter';
+  private inMemoryEnabledState: boolean | undefined = undefined;
 
   /**
    * Checks if the extension is enabled.
+   * Returns in-memory override if set, otherwise reads from config.
    */
   public isEnabled(): boolean {
+    if (this.inMemoryEnabledState !== undefined) {
+      return this.inMemoryEnabledState;
+    }
     return this.getConfig().get<boolean>('enabled', true);
+  }
+
+  /**
+   * Sets an in-memory override for the enabled state.
+   * Used when settings file can't be written to.
+   */
+  public setInMemoryEnabled(enabled: boolean): void {
+    this.inMemoryEnabledState = enabled;
+  }
+
+  /**
+   * Clears the in-memory override, reverting to config file.
+   */
+  public clearInMemoryEnabled(): void {
+    this.inMemoryEnabledState = undefined;
   }
 
   /**
@@ -41,7 +62,7 @@ export class ConfigService {
    * @returns 'terminalOnly' or 'always'
    */
   public getTriggerMode(): 'terminalOnly' | 'always' {
-    return this.getConfig().get<'terminalOnly' | 'always'>('triggerMode', 'terminalOnly');
+    return this.getConfig().get<'terminalOnly' | 'always'>('triggerMode', 'always');
   }
 
   /**
