@@ -32,11 +32,11 @@ export class StatusBarController {
     const isEnabled = this.configService.isEnabled();
 
     if (isEnabled) {
-      this.statusBarItem.text = '$(circle-filled) TIH On';
-      this.statusBarItem.tooltip = 'Terminal Impact Highlighter: Extension enabled';
+      this.statusBarItem.text = '$(circle-filled) TI On';
+      this.statusBarItem.tooltip = 'Terminal Impact: Extension enabled';
     } else {
-      this.statusBarItem.text = '$(circle-outline) TIH Off';
-      this.statusBarItem.tooltip = 'Terminal Impact Highlighter: Extension disabled';
+      this.statusBarItem.text = '$(circle-outline) TI Off';
+      this.statusBarItem.tooltip = 'Terminal Impact: Extension disabled';
     }
   }
 

@@ -19,7 +19,7 @@ export class ConfigService {
    * @returns The duration in ms, or 0 for infinite duration.
    */
   public getHighlightDurationMs(): number {
-    return this.getConfig().get<number>('highlightDurationMs', 5000);
+    return this.getConfig().get<number>('highlightDurationMs', 0);
   }
 
   /**

@@ -1,15 +1,15 @@
 {
-  "name": "terminal-impact-highlighter",
-  "displayName": "Terminal Impact Highlighter",
+  "name": "terminal-impact",
+  "displayName": "Terminal Impact",
   "description": "Highlights files created or modified by integrated terminal commands, right in the Explorer.",
-  "version": "0.0.1",
-  "publisher": "VOTRE_PUBLISHER",
+  "version": "0.0.2",
+  "publisher": "davidpinheiro",
   "engines": {
     "vscode": "^1.106.1"
   },
   "categories": [
     "Other",
-    "SCM"
+    "Visualization"
   ],
   "keywords": [
     "terminal",
@@ -52,8 +52,8 @@
         },
         "terminalImpactHighlighter.highlightDurationMs": {
           "type": "number",
-          "default": 5000,
-          "description": "Duration (in milliseconds) to keep the highlight on a file. 0 means infinite."
+          "default": 0,
+          "description": "Duration (in milliseconds) to keep the highlight on a file. 0 means infinite (until manually cleared or file opened)."
         },
         "terminalImpactHighlighter.include": {
           "type": "array",

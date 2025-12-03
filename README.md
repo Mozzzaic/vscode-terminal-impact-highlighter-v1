@@ -1,11 +1,8 @@
-# Terminal Impact Highlighter
+# Terminal Impact
 
 **See what changed. Instantly.**
 
-Terminal Impact Highlighter adds visual badges to your VS Code Explorer for files created or modified by your tools. Whether it's a CLI command or an AI Agent, never lose track of filesystem changes again.
-
-![Demo](images/demo.gif)
-*(Note: Add a GIF here showing a Rails generate command or Claude modifying a file)*
+Terminal Impact adds visual badges to your VS Code Explorer for files created or modified by your tools. Whether it's a CLI command or an AI Agent, never lose track of filesystem changes again.
 
 ## Why use this?
 
@@ -25,8 +22,8 @@ Terminal Impact Highlighter adds visual badges to your VS Code Explorer for file
 
 ### 🎛️ Status Bar Control
 Toggle the extension On/Off instantly with a single click in your Status Bar.
-*   `$(circle-filled) TIH On` : Watching active.
-*   `$(circle-outline) TIH Off` : Extension disabled.
+*   `$(circle-filled) TI On` : Watching active.
+*   `$(circle-outline) TI Off` : Extension disabled.
 
 ---
 
@@ -37,7 +34,7 @@ You can customize everything in your User Settings (`settings.json`):
 | Setting | Default | Description |
 | :--- | :--- | :--- |
 | `terminalImpactHighlighter.triggerMode` | `"terminalOnly"` | **Crucial Setting.** Use `"terminalOnly"` for standard CLI usage. Switch to `"always"` to track AI Agents (Claude/Cursor). |
-| `terminalImpactHighlighter.highlightDurationMs` | `5000` | How long (in ms) badges stay visible. Set to `0` for infinite (until file open). |
+| `terminalImpactHighlighter.highlightDurationMs` | `0` | How long (in ms) badges stay visible. `0` means infinite (stays until manually cleared). Set to `5000` for 5 seconds timeout. |
 | `terminalImpactHighlighter.enabled` | `true` | Master switch for the extension. |
 | `terminalImpactHighlighter.include` | `["**/*"]` | Glob patterns to watch. |
 | `terminalImpactHighlighter.exclude` | `["**/node_modules/**", "**/.git/**"]` | Glob patterns to ignore (highly recommended for performance). |
