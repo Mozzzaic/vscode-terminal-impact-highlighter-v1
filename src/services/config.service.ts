@@ -66,6 +66,24 @@ export class ConfigService {
   }
 
   /**
+   * Gets the badge symbol to display on modified files.
+   * @returns The badge symbol (default: ◆)
+   */
+  public getBadgeSymbol(): string {
+    const symbol = this.getConfig().get<string>('badgeSymbol', '◆');
+    // Ensure we have a valid symbol, fallback to diamond if empty
+    return symbol && symbol.trim() ? symbol.substring(0, 2) : '◆';
+  }
+
+  /**
+   * Gets when to clear the marker.
+   * @returns 'open' (clear on file open) or 'save' (clear on file save)
+   */
+  public getClearOn(): 'open' | 'save' {
+    return this.getConfig().get<'open' | 'save'>('clearOn', 'open');
+  }
+
+  /**
    * Gets the VS Code configuration object.
    */
   private getConfig(): vscode.WorkspaceConfiguration {

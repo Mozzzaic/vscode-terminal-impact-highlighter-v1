@@ -2,7 +2,7 @@
   "name": "terminal-impact",
   "displayName": "Terminal Impact",
   "description": "Highlights files created or modified by integrated terminal commands, right in the Explorer.",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "publisher": "davidpinheiro",
   "engines": {
     "vscode": "^1.106.1"
@@ -75,6 +75,21 @@
           ],
           "default": "always",
           "description": "Choose 'terminalOnly' to highlight only during terminal commands, or 'always' to highlight any file change (useful for AI agents)."
+        },
+        "terminalImpactHighlighter.badgeSymbol": {
+          "type": "string",
+          "default": "◆",
+          "maxLength": 2,
+          "description": "Unicode symbol to display as the badge on modified files (e.g., ◆, ●, ★, ✦, ⬤, ◉, ▲, ✱)."
+        },
+        "terminalImpactHighlighter.clearOn": {
+          "type": "string",
+          "enum": [
+            "open",
+            "save"
+          ],
+          "default": "open",
+          "description": "When to clear the marker: 'open' clears when file is opened/focused, 'save' clears only when file is manually saved."
         }
       }
     }

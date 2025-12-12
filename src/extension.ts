@@ -13,7 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
   const configService = new ConfigService();
   const terminalTracker = new TerminalCommandTracker();
   const highlightStore = new HighlightStore();
-  const decorationProvider = new HighlightDecorationProvider(highlightStore);
+  const decorationProvider = new HighlightDecorationProvider(highlightStore, configService);
   const statusBarController = new StatusBarController(configService);
 
   // 2. Initialize terminal command tracker
@@ -32,7 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
     decorationProvider.refresh();
   });
 
-  // 6. Listen to configuration changes to update status bar
+  // 6. Listen to configuration changes to update status bar and decorations
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((event) => {
       if (event.affectsConfiguration('terminalImpactHighlighter')) {
@@ -41,13 +41,20 @@ export function activate(context: vscode.ExtensionContext) {
         if (!configService.isEnabled()) {
           highlightStore.clear();
         }
+        // Refresh decorations if badge symbol changed
+        if (event.affectsConfiguration('terminalImpactHighlighter.badgeSymbol')) {
+          decorationProvider.refresh();
+        }
       }
     })
   );
 
-  // 6b. Auto-clear highlights when user opens/focuses a file
+  // 6b. Auto-clear highlights when user opens/focuses a file (if clearOn is 'open')
   context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor((editor) => {
+      if (configService.getClearOn() !== 'open') {
+        return; // Skip if clearOn is 'save'
+      }
       if (editor && editor.document) {
         const openedUri = editor.document.uri;
         // Remove highlight from the opened file
@@ -55,6 +62,21 @@ export function activate(context: vscode.ExtensionContext) {
           highlightStore.delete(openedUri);
           console.log(`Cleared highlight for opened file: ${openedUri.fsPath}`);
         }
+      }
+    })
+  );
+
+  // 6c. Auto-clear highlights when user saves a file (if clearOn is 'save')
+  context.subscriptions.push(
+    vscode.workspace.onDidSaveTextDocument((document) => {
+      if (configService.getClearOn() !== 'save') {
+        return; // Skip if clearOn is 'open'
+      }
+      const savedUri = document.uri;
+      // Remove highlight from the saved file
+      if (highlightStore.has(savedUri)) {
+        highlightStore.delete(savedUri);
+        console.log(`Cleared highlight for saved file: ${savedUri.fsPath}`);
       }
     })
   );

@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { HighlightStore } from './highlight-store';
+import { ConfigService } from '../services/config.service';
 
 /**
  * Decoration provider responsible for adding a badge
@@ -11,7 +12,10 @@ export class HighlightDecorationProvider implements vscode.FileDecorationProvide
   >();
   public readonly onDidChangeFileDecorations = this._onDidChangeFileDecorations.event;
 
-  constructor(private store: HighlightStore) {}
+  constructor(
+    private store: HighlightStore,
+    private configService: ConfigService
+  ) {}
 
   /**
    * Method called by VS Code for each file visible in the explorer.
@@ -22,9 +26,9 @@ export class HighlightDecorationProvider implements vscode.FileDecorationProvide
     _token: vscode.CancellationToken  // Prefixed with _ to indicate intentionally unused
   ): vscode.ProviderResult<vscode.FileDecoration> {
     if (this.store.has(uri)) {
-      // Use orange/amber theme color with diamond badge for visibility
+      // Use orange/amber theme color with configurable badge symbol
       return new vscode.FileDecoration(
-        '◆',  // Diamond badge character - distinct from GitHub's UI
+        this.configService.getBadgeSymbol(),  // Configurable badge symbol
         'Modified by Terminal Impact',  // Tooltip on hover
         new vscode.ThemeColor('charts.orange')  // Professional orange color that works in light/dark themes
       );
